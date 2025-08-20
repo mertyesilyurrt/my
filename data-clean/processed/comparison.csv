@@ -1,6 +1,0 @@
-metric_name,local_value,expected_direction,unit_lit,url,citation_title,unit,sign,alignment
-dep_dist,-0.7836106914725915,positive,%,https://en.wikipedia.org/wiki/Center_embedding,Dependency locality / working memory constraints,%,-1.0,Disagree
-freq_zipf,-5.290908392988514,negative,%,https://en.wikipedia.org/wiki/Eye_movement_in_reading,Eye movement in reading (overview),%,-1.0,Agree
-integration_cost,0.0300523971912713,positive,%,https://en.wikipedia.org/wiki/Working_memory#Language,Dependency locality / working memory load,%,1.0,Agree
-depth,1.3294084368072223,positive,%,https://en.wikipedia.org/wiki/Center_embedding,Center embedding and working memory,%,1.0,Agree
-word_len,9.356613321942442,positive,%,https://en.wikipedia.org/wiki/Eye_movement_in_reading,Word length and fixation duration (models like E-Z Reader),%,1.0,Agree
