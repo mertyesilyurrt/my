@@ -11,5 +11,6 @@ PyYAML==6.0.2
 requests==2.32.3
 wordfreq==3.1.1
 spacy==3.8.0
-polars==1.31.1
+# Use a Polars version available on PyPI for Python 3.12
+polars==1.32.0
 pymovements==0.23.0
