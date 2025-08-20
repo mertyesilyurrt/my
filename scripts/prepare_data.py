@@ -91,10 +91,32 @@ def prepare_from_yaml(cfg_path: Path):
             print(f'Found existing download: {dest}')
 
         if expected_md5:
+            if not dest.exists():
+                print(f'Expected download {dest} not found after attempt.', file=sys.stderr)
+                sys.exit(1)
+
             actual = md5sum(dest)
             if actual != expected_md5:
                 print(f'MD5 mismatch for {dest}: {actual} != {expected_md5}', file=sys.stderr)
-                sys.exit(1)
+                # Attempt one re-download in case the cached file is corrupt/partial
+                try:
+                    print('Removing corrupt download and re-downloading...')
+                    dest.unlink()
+                except Exception:
+                    pass
+                print(f'Re-downloading {url} -> {dest}')
+                download_resource(url, dest)
+
+                if not dest.exists():
+                    print(f'Failed to download {dest} on retry.', file=sys.stderr)
+                    sys.exit(1)
+
+                actual = md5sum(dest)
+                if actual != expected_md5:
+                    print(f'MD5 mismatch after re-download for {dest}: {actual} != {expected_md5}', file=sys.stderr)
+                    sys.exit(1)
+                else:
+                    print('MD5 verified after re-download.')
             else:
                 print('MD5 verified.')
 
