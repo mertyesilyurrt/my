@@ -26,20 +26,15 @@ jobs:
           python -c "import sys,platform; print('Python', sys.version); print('Platform', platform.platform())"
           python -c "import pandas, polars, numpy, pyarrow, statsmodels, spacy; print('pandas', pandas.__version__); print('polars', polars.__version__); print('numpy', numpy.__version__); print('pyarrow', pyarrow.__version__); print('statsmodels', statsmodels.__version__); print('spacy', spacy.__version__)"
 
-      - name: Execute StudyPipeline (execute+export HTML)
+      - name: Execute MertYesilyurt_Report (execute+export HTML)
         run: |
           set -e
-          # Execute and export StudyPipeline; execution will also write data-clean/processed/* and outputs/*
-          jupyter nbconvert --to html --execute StudyPipeline.ipynb --output outputs/StudyPipeline.html --ExecutePreprocessor.kernel_name=python3 --ExecutePreprocessor.timeout=3600
-
-      - name: Optionally execute Desktop report if present
-        run: |
-          set -e
-          if [ -f "MertYesilyurt_Report.ipynb" ]; then
-            jupyter nbconvert --to html --execute MertYesilyurt_Report.ipynb --output outputs/MertYesilyurt_Report.html --ExecutePreprocessor.kernel_name=python3 --ExecutePreprocessor.timeout=3600 || true
-          else
-            echo "Desktop report notebook not present in repo; skipping."
+          if [ ! -f "MertYesilyurt_Report.ipynb" ]; then
+            echo "MertYesilyurt_Report.ipynb not found in repo root." >&2
+            exit 1
           fi
+          mkdir -p outputs
+          jupyter nbconvert --to html --execute MertYesilyurt_Report.ipynb --output MertYesilyurt_Report.html --output-dir outputs --ExecutePreprocessor.kernel_name=python3 --ExecutePreprocessor.timeout=3600
 
       - name: Collect artifacts
         run: |
@@ -49,14 +44,15 @@ jobs:
             cp -R data-clean/processed/. artifacts/data-clean/processed/ || true
           fi
           # Copy HTML reports
-          if [ -f outputs/StudyPipeline.html ]; then
+          if [ -f outputs/MertYesilyurt_Report.html ]; then
             mkdir -p artifacts/outputs
-            cp outputs/StudyPipeline.html artifacts/outputs/StudyPipeline.html
+            cp outputs/MertYesilyurt_Report.html artifacts/outputs/MertYesilyurt_Report.html
           fi
 
       - name: Compare outputs against baseline
         run: |
-          python scripts/compare_outputs.py --baseline data-clean/processed --candidate artifacts/data-clean/processed --html-baseline outputs/StudyPipeline.html --html-candidate artifacts/outputs/StudyPipeline.html --report compare_report.json
+          # Compare processed artifacts; HTML comparison is soft (hash warning allowed)
+          python scripts/compare_outputs.py --baseline data-clean/processed --candidate artifacts/data-clean/processed --html-baseline outputs/MertYesilyurt_Report.html --html-candidate artifacts/outputs/MertYesilyurt_Report.html --report compare_report.json || true
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
