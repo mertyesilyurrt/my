@@ -32,6 +32,8 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
+          # Pre-install polars to ensure the runner resolves a py3.12-compatible wheel
+          python -m pip install polars==1.32.0
           pip install -r requirements.txt
           python -m spacy download en_core_web_sm
 
