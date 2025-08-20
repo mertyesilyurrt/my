@@ -1,0 +1,58 @@
+name: Reproducibility Check
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'requirements.txt'
+      - 'gctg-clean.yaml'
+      - 'StudyPipeline.ipynb'
+      - '.github/workflows/repro.yml'
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          python -m spacy download en_core_web_sm
+
+      - name: Prepare data from gctg-clean.yaml
+        run: |
+          python scripts/prepare_data.py --config gctg-clean.yaml
+
+      - name: Ensure output directories exist
+        run: |
+          mkdir -p outputs
+          mkdir -p data-clean/processed
+
+      - name: Execute StudyPipeline and export HTML
+        run: |
+          python -m jupyter nbconvert --to html --execute StudyPipeline.ipynb --output outputs/StudyPipeline.html --ExecutePreprocessor.kernel_name=python3 --ExecutePreprocessor.timeout=7200
+
+      - name: Upload artifacts (HTML and processed outputs)
+        uses: actions/upload-artifact@v4
+        with:
+          name: studypipeline-outputs
+          path: |
+            outputs/StudyPipeline.html
+            data-clean/processed/**
+          if-no-files-found: warn

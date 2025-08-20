@@ -1,0 +1,2 @@
+data-clean/processed/*.nc filter=lfs diff=lfs merge=lfs -text
+data-clean/downloads/*.zip filter=lfs diff=lfs merge=lfs -text

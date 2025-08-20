@@ -1,0 +1,61 @@
+{
+  "file:fe_validation": true,
+  "file:fe_chosen": true,
+  "file:cond_means": true,
+  "file:cond_contrasts": true,
+  "file:feat_desc": true,
+  "file:feat_mixed": true,
+  "file:trt_features_parq": true,
+  "file:trt_features_csv": true,
+  "file:features_by_word_parq": true,
+  "file:trt_cond_with": true,
+  "file:trt_cond_without": true,
+  "file:report_main": true,
+  "file:report_feat_effects": true,
+  "file:report_feat_desc_wide": true,
+  "file:report_cond_means": true,
+  "file:report_cond_contrasts": true,
+  "file:fig_feature_effects": true,
+  "file:fig_condition_means": true,
+  "data:trt_loaded": true,
+  "consistency:fe_validation_percent_consistent": true,
+  "consistency:contrasts_additivity": false,
+  "consistency:report_main_matches_validation": true,
+  "consistency:ran": true,
+  "health:rows": 36160,
+  "health:missing": {
+    "total_reading_time": 0,
+    "word_len": 0,
+    "freq_zipf": 939,
+    "dep_dist": 102,
+    "depth": 102,
+    "integration_cost": 102,
+    "condition": 0,
+    "subject_id": 0,
+    "stimulus": 0
+  },
+  "health:threshold_flags": {
+    "freq_zipf": true,
+    "word_len": true,
+    "dep_dist": true,
+    "depth": true,
+    "integration_cost": true
+  },
+  "health:cond_counts": {
+    "neg": 13795,
+    "zero": 12548,
+    "pos": 9817
+  },
+  "health:subj_counts_desc": {
+    "count": 12.0,
+    "mean": 3013.3333333333335,
+    "std": 500.22546431735674,
+    "min": 1724.0,
+    "25%": 2971.25,
+    "50%": 3201.0,
+    "75%": 3314.0,
+    "max": 3412.0
+  },
+  "consistency:contrasts_additivity_logscale": true,
+  "consistency:fe_validation_percent_ci_consistent": true
+}

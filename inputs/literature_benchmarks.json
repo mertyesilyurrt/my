@@ -1,0 +1,67 @@
+[
+  {
+    "metric_name": "freq_zipf",
+    "expected_direction": "negative",
+    "unit": "%",
+    "uncertainty_type": "none",
+    "uncertainty_value": null,
+    "sample_size": null,
+    "doi": null,
+    "citation_title": "Eye movement in reading (overview)",
+    "url": "https://en.wikipedia.org/wiki/Eye_movement_in_reading",
+    "year": null,
+    "notes": "Robust frequency effect: higher frequency reduces gaze durations."
+  },
+  {
+    "metric_name": "word_len",
+    "expected_direction": "positive",
+    "unit": "%",
+    "uncertainty_type": "none",
+    "uncertainty_value": null,
+    "sample_size": null,
+    "doi": null,
+    "citation_title": "Word length and fixation duration (models like E-Z Reader)",
+    "url": "https://en.wikipedia.org/wiki/Eye_movement_in_reading",
+    "year": null,
+    "notes": "Longer words are associated with longer fixation durations."
+  },
+  {
+    "metric_name": "dep_dist",
+    "expected_direction": "positive",
+    "unit": "%",
+    "uncertainty_type": "none",
+    "uncertainty_value": null,
+    "sample_size": null,
+    "doi": null,
+    "citation_title": "Dependency locality / working memory constraints",
+    "url": "https://en.wikipedia.org/wiki/Center_embedding",
+    "year": null,
+    "notes": "Greater dependency distance increases processing difficulty (locality)."
+  },
+  {
+    "metric_name": "depth",
+    "expected_direction": "positive",
+    "unit": "%",
+    "uncertainty_type": "none",
+    "uncertainty_value": null,
+    "sample_size": null,
+    "doi": null,
+    "citation_title": "Center embedding and working memory",
+    "url": "https://en.wikipedia.org/wiki/Center_embedding",
+    "year": null,
+    "notes": "Syntactic depth relates to working-memory load and difficulty."
+  },
+  {
+    "metric_name": "integration_cost",
+    "expected_direction": "positive",
+    "unit": "%",
+    "uncertainty_type": "none",
+    "uncertainty_value": null,
+    "sample_size": null,
+    "doi": null,
+    "citation_title": "Dependency locality / working memory load",
+    "url": "https://en.wikipedia.org/wiki/Working_memory#Language",
+    "year": null,
+    "notes": "Higher integration cost predicts longer reading times under locality theories."
+  }
+]

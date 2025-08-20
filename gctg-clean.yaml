@@ -1,0 +1,39 @@
+name: 'gctg'
+
+has_files:
+  gaze: true
+  precomputed_events: false
+  precomputed_reading_measures: false
+
+resources:
+  gaze:
+    - resource: 'https://syncandshare.lrz.de/dl/fiNmkHntgLXUC1jizcTYJ/gctg-data-clean.zip'
+      filename: 'gctg-data-clean.zip'
+      md5: '42ae501f8840abdf017206899079d016'
+  
+experiment:
+  screen_width_px: 1100
+  screen_height_px: 900
+  screen_width_cm: 31.2
+  screen_height_cm: 25.2
+  distance_cm: 66
+  origin: 'upper left'
+  eyetracker:
+    vendor: 'EyeLink'
+    model: 'EyeLink 1000 Plus'
+    sampling_rate: 1000
+
+filename_format:
+  gaze:
+    '(?P<subject_id>P\d+).csv'
+
+filename_format_schema_overrides:
+  gaze:
+    subject_id: !polars.Utf8
+
+custom_read_kwargs:
+  gaze:
+
+pixel_columns: ['pixel_x', 'pixel_y']
+
+trial_columns: ['stimulus']
