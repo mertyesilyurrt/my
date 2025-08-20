@@ -1,15 +1,21 @@
 numpy==1.26.4
 pandas==2.3.1
-polars==1.31.0
+polars==1.6.0
 pyarrow==15.0.2
 matplotlib==3.10.3
 seaborn==0.13.2
 statsmodels==0.14.5
 scipy==1.13.1
 patsy==1.0.1
-spacy==3.8.0
+spacy==3.7.4
 wordfreq==3.1.1
 pymovements==0.23.0
 
-# spaCy English model (small)
-https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl
+# spaCy English model (small) compatible with spacy==3.7.x
+https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl
+ 
+# Notebook runtime/export
+ipykernel==6.29.5
+jupyter-core==5.7.2
+nbconvert==7.16.4
+ipywidgets==8.1.2

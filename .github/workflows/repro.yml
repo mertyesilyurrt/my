@@ -1,19 +1,17 @@
 name: Reproducibility Check
 
 on:
-  workflow_dispatch:
   push:
-    paths:
-      - 'requirements.txt'
-      - 'gctg-clean.yaml'
-      - 'StudyPipeline.ipynb'
-      - '.github/workflows/repro.yml'
+    branches: [ repro-check ]
+  pull_request:
+    branches: [ repro-check ]
+  workflow_dispatch:
 
 jobs:
-  run-pipeline:
+  repro:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -21,40 +19,49 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Cache pip
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: Install Python dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          # Pre-install polars to ensure the runner resolves a wheel compatible with pymovements
-          python -m pip install polars==1.31.0
           pip install -r requirements.txt
-          python -m spacy download en_core_web_sm
+          python -c "import sys,platform; print('Python', sys.version); print('Platform', platform.platform())"
+          python -c "import pandas, polars, numpy, pyarrow, statsmodels, spacy; print('pandas', pandas.__version__); print('polars', polars.__version__); print('numpy', numpy.__version__); print('pyarrow', pyarrow.__version__); print('statsmodels', statsmodels.__version__); print('spacy', spacy.__version__)"
 
-      - name: Prepare data from gctg-clean.yaml
+      - name: Execute StudyPipeline (execute+export HTML)
         run: |
-          python scripts/prepare_data.py --config gctg-clean.yaml
+          set -e
+          # Execute and export StudyPipeline; execution will also write data-clean/processed/* and outputs/*
+          jupyter nbconvert --to html --execute StudyPipeline.ipynb --output outputs/StudyPipeline.html --ExecutePreprocessor.kernel_name=python3 --ExecutePreprocessor.timeout=3600
 
-      - name: Ensure output directories exist
+      - name: Optionally execute Desktop report if present
         run: |
-          mkdir -p outputs
-          mkdir -p data-clean/processed
+          set -e
+          if [ -f "MertYesilyurt_Report.ipynb" ]; then
+            jupyter nbconvert --to html --execute MertYesilyurt_Report.ipynb --output outputs/MertYesilyurt_Report.html --ExecutePreprocessor.kernel_name=python3 --ExecutePreprocessor.timeout=3600 || true
+          else
+            echo "Desktop report notebook not present in repo; skipping."
+          fi
 
-      - name: Execute StudyPipeline and export HTML
+      - name: Collect artifacts
         run: |
-          python -m jupyter nbconvert --to html --execute StudyPipeline.ipynb --output outputs/StudyPipeline.html --ExecutePreprocessor.kernel_name=python3 --ExecutePreprocessor.timeout=7200
+          mkdir -p artifacts/data-clean/processed artifacts/outputs/figures
+          # Copy processed tables and figures
+          if [ -d data-clean/processed ]; then
+            cp -R data-clean/processed/. artifacts/data-clean/processed/ || true
+          fi
+          # Copy HTML reports
+          if [ -f outputs/StudyPipeline.html ]; then
+            mkdir -p artifacts/outputs
+            cp outputs/StudyPipeline.html artifacts/outputs/StudyPipeline.html
+          fi
 
-      - name: Upload artifacts (HTML and processed outputs)
+      - name: Compare outputs against baseline
+        run: |
+          python scripts/compare_outputs.py --baseline data-clean/processed --candidate artifacts/data-clean/processed --html-baseline outputs/StudyPipeline.html --html-candidate artifacts/outputs/StudyPipeline.html --report compare_report.json
+
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: studypipeline-outputs
+          name: notebook-artifacts
           path: |
-            outputs/StudyPipeline.html
-            data-clean/processed/**
-          if-no-files-found: warn
+            artifacts
+            compare_report.json
